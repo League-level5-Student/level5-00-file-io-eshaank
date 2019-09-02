@@ -2,6 +2,11 @@ package _03_To_Do_List;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -14,7 +19,7 @@ public class ToDoList implements ActionListener {
 	JPanel panel;
 
 	JButton addTask;
-	JButton viewTask;
+	JButton viewList;
 	JButton removeTask;
 	JButton saveList;
 	JButton loadList;
@@ -32,7 +37,7 @@ public class ToDoList implements ActionListener {
 		panel = new JPanel();
 
 		addTask = new JButton();
-		viewTask = new JButton();
+		viewList = new JButton();
 		removeTask = new JButton();
 		saveList = new JButton();
 		loadList = new JButton();
@@ -41,19 +46,19 @@ public class ToDoList implements ActionListener {
 		frame.add(panel);
 
 		addTask.setLabel("Add Task");
-		viewTask.setLabel("View Task");
+		viewList.setLabel("View List");
 		removeTask.setLabel("Remove Task");
 		saveList.setLabel("Save List");
 		loadList.setLabel("Load List");
 
 		panel.add(addTask);
-		panel.add(viewTask);
+		panel.add(viewList);
 		panel.add(removeTask);
 		panel.add(saveList);
 		panel.add(loadList);
 
 		addTask.addActionListener(this);
-		viewTask.addActionListener(this);
+		viewList.addActionListener(this);
 		removeTask.addActionListener(this);
 		saveList.addActionListener(this);
 		loadList.addActionListener(this);
@@ -69,15 +74,13 @@ public class ToDoList implements ActionListener {
 			String task = JOptionPane.showInputDialog("Enter a task to be saved");
 			taskList.add(task);
 		}
-		
-		
+
 		String display = "";
 		for (int i = 0; i < taskList.size(); i++) {
 			display += taskList.get(i) + "\n";
 		}
-		
-		
-		if (e.getSource() == viewTask) {
+
+		if (e.getSource() == viewList) {
 			JOptionPane.showMessageDialog(null, display);
 		}
 
@@ -89,6 +92,41 @@ public class ToDoList implements ActionListener {
 				}
 			}
 			System.out.println(taskList);
+		}
+		if (e.getSource() == saveList) {
+			try {
+				FileWriter saveFile = new FileWriter("src/_03_To_Do_List/savedList.txt");
+				saveFile.write(display);
+				saveFile.close();
+
+			} catch (IOException p) {
+				p.printStackTrace();
+			}
+		}
+		if (e.getSource() == loadList) {
+			try {
+				BufferedReader load = new BufferedReader(new FileReader("src/_03_To_Do_List/savedList.txt"));
+
+				String fileContents = "";
+				String temp = "";
+				temp = load.readLine();
+				while (temp != null) {
+					
+					fileContents += temp + "\n";
+					temp = load.readLine();
+				}
+				
+				JOptionPane.showMessageDialog(null, fileContents);
+				//fileContents = load.readLine();
+
+				load.close();
+			} catch (FileNotFoundException p1) {
+				// TODO Auto-generated catch block
+				p1.printStackTrace();
+			} catch (IOException p2) {
+				// TODO Auto-generated catch block
+				p2.printStackTrace();
+			}
 		}
 	}
 }
